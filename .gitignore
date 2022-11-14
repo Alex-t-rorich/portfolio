@@ -1,0 +1,24 @@
+# Ignore node_modules folder
+node_modules/
+
+# Ignore python scripts folder
+Scripts/
+
+# Ignore python library folder
+Lib/
+
+# Ignore python include folder
+Include/
+
+# Ignore sql alchemy database folder
+var/
+
+# Random files that would be changed in git
+package-lock.json
+package.json
+tailwind.config.js
+website/static/css/tailwindstyle.css
+__pycache__/
+
+# Ignore sql alchemy database folder
+venv/

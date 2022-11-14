@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{{ url_for('static', filename='css/tailwindstyle.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+
+    <title>{% block title %}Home{% endblock %}</title>
+</head>
+
+
+<body>
+
+
+    <nav class="bg-slate-800 text-white z-10 w-full sticky">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between">
+                <div class="flex space-x-7">
+                    <!-- Website Logo -->
+                    <a href="#" class="flex items-center py-4 px-2">
+                        <!-- <img src="logo.png" alt="Logo" class="h-8 w-8 mr-2"> -->
+                        <span class="font-semibold text-gray-500 text-lg">A.T.Rörich</span>
+                    </a>
+                    <!-- Primary Navbar items -->
+                    <div class="hidden md:flex items-center space-x-1">
+                        <a href="/" class="p-5 text-slate-500 font-semibold hover:text-slate-800 transition duration-300 hover:bg-slate-500">Home</a>
+                        <a href="" class="p-5 text-slate-500 font-semibold hover:text-slate-800 transition duration-300 hover:bg-slate-500">Services</a>
+                        {% if user.is_authenticated %}
+                            <a href="/logout" id="logout" class="p-5 text-slate-500 font-semibold hover:text-slate-800 transition duration-300 hover:bg-slate-500">Log Out</a>
+                            <a href="/admin" class="p-5 text-slate-500 font-semibold hover:text-slate-800 transition duration-300 hover:bg-slate-500">Admin</a>
+                        {% else %}
+                            <a href="/register" class="p-5 text-slate-500 font-semibold hover:text-slate-800 transition duration-300 hover:bg-slate-500">Register</a>
+                            <a href="/login" class="p-5 text-slate-500 font-semibold hover:text-slate-800 transition duration-300 hover:bg-slate-500">Log In</a>
+                        {% endif %}                        
+                        <a href="" class="p-5 text-slate-500 font-semibold hover:text-slate-800 transition duration-300 hover:bg-slate-500 sm:hidden">Contact</a>
+                    </div>
+                   
+                </div>
+                <a href="" class="p-5 text-slate-500 font-semibold hover:text-slate-800 transition duration-300 hover:bg-slate-500 hidden md:block lg:float-right">Contact</a>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button class="outline-none mobile-menu-button">
+                    <svg class="w-6 h-6 text-slate-500 hover:text-slate-800 hover:bg-slate-500"
+                        x-show="!showMenu"
+                        fill="none"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                </div>
+            </div>
+        </div>
+        <!-- mobile menu -->
+        <div class="hidden mobile-menu">
+            <ul class="">
+                <li><a href="index.html" class="block text-sm px-2 py-4 text-slate-500 font-semibold hover:text-slate-800 transition duration-300 hover:bg-slate-500">Home</a></li>
+                <li><a href="#services" class="block text-sm px-2 py-4 text-slate-500 font-semibold hover:text-slate-800 transition duration-300 hover:bg-slate-500">Services</a></li>
+                <li><a href="#about" class="block text-sm px-2 py-4 text-slate-500 font-semibold hover:text-slate-800 transition duration-300 hover:bg-slate-500">About</a></li>
+                <li><a href="#contact" class="block text-sm px-2 py-4 text-slate-500 font-semibold hover:text-slate-800 transition duration-300 hover:bg-slate-500">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+
+
+    {% if request.path == "/" %}
+        <div class="content h-screen w-full bg-image" 
+            style="background:linear-gradient(0deg, rgba(184,57,86,0.3) 15%, rgba(168,191,214,0.3) 100%), url('/static/images/atr-tree.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;">
+            <div class="">
+                <h1 class="text-slate-300 my-8 text-5xl text-center">Alexander Thomas Rörich</h1>
+            </div>
+        </div>
+    {% endif %}
+
+    <main class="content h-screen">      
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% if category == 'error' %}
+                        <div class="alert alert-danger alter-dismissable fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span aria-hidden>&times;</span>
+                            </button>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success alter-dismissable fade show" role="success">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span aria-hidden>&times;</span>
+                            </button>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}      
+        
+        {% block content %}
+        {% endblock %}
+    </main>
+    
+    <script type="text/javascript">
+        const btn = document.querySelector("button.mobile-menu-button");
+        const menu = document.querySelector(".mobile-menu");
+
+        btn.addEventListener("click", () => {
+            menu.classList.toggle("hidden");
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"
+      ></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/index.js') }}"></script>
+    {% if request.path == "/admin" %}
+        <script type="text/javascript" src="{{ url_for('static', filename='js/modal.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/delete_nav.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/delete_education.js') }}"></script>
+    {% endif %}
+
+
+</body>
+
+</html>

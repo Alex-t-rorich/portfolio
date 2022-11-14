@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% block title %}Admin{% endblock title %}
+
+{% block content %}
+    <div class="container mx-auto">
+        <h1 class="text-3xl">Admin</h1>
+        <h4 class="text-xl">Profile</h4>
+        <ul class="list-group list-group-flush" id="notes">
+            <li class="list-group-item">
+                Full Name: {{ user.full_name }} - {{ user.is_admin }}
+            </li>
+            <li class="list-group-item">
+                Email: Address: {{ user.email }}
+            </li>
+            <li class="list-group-item">
+                Contact Number: {{ user.contact_num }}
+            </li>
+            <li class="list-group-item">
+                Skype Address: {{ user.skype }}
+            </li>
+            <li class="list-group-item">
+                GitHub Address: {{ user.github }}
+            </li>
+            <li class="list-group-item">
+                Current Location: {{ user.location }}
+            </li>
+
+            <button id="profileAddBtn" class="mt-4 py-2 px-4 bg-green-500 hover:bg-green-700 text-white font-bold rounded flex-right">
+                Edit User Information
+            </button>
+        </ul>
+        
+        <hr class="my-8 h-px bg-gray-200 border-0 dark:bg-gray-300">
+
+        <h4>Navigation</h4>
+        <div class="grid grid-cols-4 gap-4">
+            <div>ID</div>
+            <div>Title</div>
+            <div> </div>
+            <div> </div>
+            {% for nav in navigation %}
+                <div>{{ nav.id }}</div>
+                <div>{{ nav.title }}</div>
+                <div>            
+                    <button id="navigationEditBtn{{ nav.id }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex-right">
+                        Edit Navigation Link
+                    </button>
+                </div>
+                <div>
+                    <button  class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex-right"
+                        onClick="deleteNav({{ nav.id }})
+                    ">
+                        Delete Navigation Link
+                    </button>
+                </div>
+            {% endfor %}
+            <div>
+                <button id="navigationAddBtn" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex-right">
+                    Add Navigation Link
+                </button>
+            </div>
+        </div>
+        <hr class="my-8 h-px bg-gray-200 border-0 dark:bg-gray-300">
+
+        <h4>Education</h4>
+        <div class="grid grid-cols-4 gap-4">
+            <div>Title</div>
+            <div>Description</div>
+            <div> </div>
+            <div> </div>
+            {% for education in education %}
+                <div>{{ education.title }}</div>
+                <div class="text-ellipsis"><a title="{{ education.desc }}">{{ education.desc }}</a></div>
+                <div>            
+                    <button id="educationEditBtn{{ education.id }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex-right">
+                        Edit Education
+                    </button>
+                </div>
+                <div>
+                    <button  class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex-right"
+                        onClick="deleteEducation({{ education.id }})">
+                        Delete Education Link
+                    </button>
+                </div>
+            {% endfor %}
+            <div>
+                <button id="educationAddBtn" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex-right">
+                    Add Education
+                </button>
+            </div>
+        </div>
+        <hr class="my-8 h-px bg-gray-200 border-0 dark:bg-gray-300">
+        {% for cv in cvs %}
+
+        
+            <h4>Work Experience</h4>
+            <h3>{{ title }}</h3>
+            <h3>{{ company_name }}</h3>
+            <h3>{{ start_date }} - {{ end_Date }}</h3>
+            <h3></h3>
+            <h3>{{ cv_descs }}</h3>
+        {% endfor %}
+
+        <div class="h-screen"></div>
+    </div>
+
+
+
+
+
+
+    <!-- Profile Edit Modal -->
+    <div id="profileAddModal" class="modal">
+        <div class="modal-content max-w-xs">
+            <div class="modal-header">
+                <span id="profileSpan" class="close">&times;</span>
+                <h2>Profile Name</h2>
+            </div>
+            <div class="modal-body">
+                <div class="w-full px-auto">
+                    <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" action="{{ url_for('auth.profile_submit') }}" method="post">
+                        <div class="mb-4">
+                            <input type="text" name="profile_id" id="profile_id" value="{{ user.id }}"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline hidden">
+                        </div>
+                        <div class="mb-4">
+                            <label for="profile_name" class="block text-gray-700 text-sm font-bold mb-2">
+                                Full Name
+                            </label>
+                            <input type="text" name="profile_name" id="profile_name" placeholder="{{ user.full_name }}"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-4">
+                            <label for="profile_email" class="block text-gray-700 text-sm font-bold mb-2">
+                                Email Address
+                            </label>
+                            <input type="text" name="profile_email" id="profile_email" placeholder="{{ user.email }}"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-4">
+                            <label for="profile_number" class="block text-gray-700 text-sm font-bold mb-2">
+                                Contact Number
+                            </label>
+                            <input type="text" name="profile_number" id="profile_number" placeholder="{{ user.contact_num }}"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-4">
+                            <label for="profile_skype" class="block text-gray-700 text-sm font-bold mb-2">
+                                Skype 
+                            </label>
+                            <input type="text" name="profile_skype" id="profile_skype" placeholder="{{ user.skype }}"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-4">
+                            <label for="profile_git" class="block text-gray-700 text-sm font-bold mb-2">
+                                GitHub Address
+                            </label>
+                            <input type="text" name="profile_git" id="profile_git" placeholder="{{ user.github }}"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-4">
+                            <label for="profile_location" class="block text-gray-700 text-sm font-bold mb-2">
+                                Current Location
+                            </label>
+                            <input type="text" name="profile_location" id="profile_location" placeholder="{{ user.location }}"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <button type="submit"
+                            class="w-full text-slate-800 bg-primary-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center 
+                            dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300">
+                            Update
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Add Modal -->
+    <div id="navigationAddModal" class="modal">
+        <div class="modal-content max-w-xs">
+            <div class="modal-header">
+                <span id="navigationSpan" class="close">&times;</span>
+                <h2>Add Navigation Name</h2>
+            </div>
+            <div class="modal-body">
+                <div class="w-full px-auto">
+                    <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" action="{{ url_for('auth.navigation_submit') }}" method="post">
+                        <div class="mb-4">
+                            <label for="navigation_link" class="block text-gray-700 text-sm font-bold mb-2">
+                                Navigation Name
+                            </label>
+                            <input type="text" name="navigation_link" id="navigation_link" placeholder="Navigation Name"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <button type="submit"
+                            class="w-full text-slate-800 bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navigation Edit Modal -->
+    {% for nav in navigation %}
+        <div id="navigationEditModal{{ nav.id }}" class="modal">
+            <div class="modal-content max-w-xs">
+                <div class="modal-header">
+                    <span class="close close{{ nav.id }}">&times;</span>
+                    <h2>Edit Navigation Name</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="w-full px-auto">
+                        <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" action="{{ url_for('auth.navigation_edit') }}" method="post">
+                            <div class="mb-4">
+                                <label for="navigation_link" class="block text-gray-700 text-sm font-bold mb-2">
+                                    {{ nav.title }}
+                                </label>
+                                <input type="text" name="navigation_link" id="navigation_link" placeholder="Navigation Name"
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+
+                                <input type="text" name="navigation_edit_id" id="navigation_edit_id" placeholder="Navigation Name" class="hidden" value="{{ nav.id }}">
+                                <input type="text" name="navigation_count" id="navigation_count" value="{{ navigation_count }}" placeholder="Navigation Name" class="hidden">
+                            </div>
+                            <button type="submit"
+                                class="w-full text-slate-800 bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Add</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+
+    <!-- Education Add Modal -->
+    <div id="educationAddModal" class="modal">
+        <div class="modal-content max-w-xs">
+            <div class="modal-header">
+                <span id="educationSpan" class="close">&times;</span>
+                <h2>Add Education Name</h2>
+            </div>
+            <div class="modal-body">
+                <div class="w-full px-auto">
+                    <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" action="{{ url_for('auth.education_submit') }}" method="post">
+                        <div class="mb-4">
+                            <label for="education_title" class="block text-gray-700 text-sm font-bold mb-2">
+                                Education Title
+                            </label>
+                            <input type="text" name="education_title" id="education_title" placeholder="Education Title"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-4">
+                            <label for="education_desc" class="block text-gray-700 text-sm font-bold mb-2">
+                                Education Description
+                            </label>
+                            <input type="text" name="education_desc" id="education_desc" placeholder="Education Description"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <button type="submit"
+                            class="w-full text-slate-800 bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Education Edit Modal -->
+    {% for edu in education %}
+        <div id="educationEditModal{{ edu.id }}" class="modal">
+            <div class="modal-content max-w-xs">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h2>Edit Education Name</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="w-full px-auto">
+                        <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" action="{{ url_for('auth.education_edit') }}" method="post">
+                            <div class="mb-4">
+                                <label for="education_edit_title" class="block text-gray-700 text-sm font-bold mb-2">
+                                    Education Title
+                                </label>
+                                <input type="text" name="education_edit_title" id="education_edit_title" placeholder="{{ edu.title }}"
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">                                
+                            </div>
+                            <div class="mb-4">
+                                <label for="education_desc" class="block text-gray-700 text-sm font-bold mb-2">
+                                    Education Description
+                                </label>
+                                <input type="text" name="education_desc" id="education_desc" placeholder="{{ edu.desc }}"
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                            <div class="hidden">
+                                <input type="text" name="education_edit_id" id="education_edit_id" value="{{ edu.id }}">
+                                <input type="text" name="education_count" id="education_count" value="{{ education_count }}">
+                            </div>
+                            <button type="submit"
+                                class="w-full text-slate-800 bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Add</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+{% endblock %}
